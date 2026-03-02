@@ -137,3 +137,51 @@ Inspired by smart automation cycles:
 
 🔹 Outcome:
 A continuously improving pricing engine with adaptive intelligence.
+🛠 Steps to Run the Project Locally
+
+Follow this execution pipeline carefully 👇
+
+1️⃣ Repository Initialization
+git clone <repository-url>
+cd <project-folder>
+
+📂 Navigate to project root directory.
+
+2️⃣ Environment Setup
+
+Install required dependencies:
+
+pip install -r requirements.txt
+
+🔹 Ensures all ML, preprocessing, and UI libraries are installed.
+
+3️⃣ Baseline Model Training
+python train.py
+
+⚠️ Important Step
+
+Trains the Random Forest model.
+
+Generates:
+
+pricing_model.pkl
+
+Preprocessing artifacts
+
+Without this step, the frontend will not function.
+
+4️⃣ Application Deployment
+streamlit run app.py
+
+🌐 This will:
+
+Launch local web server
+
+Open dashboard in default browser
+
+Activate the interactive pricing interface
+
+🏗 Overall Architecture Summary
+Raw Data → Cleaning → Feature Engineering → ML Training
+        → Model Serialization → Inference Engine
+        → Streamlit Dashboard → Feedback Loop
