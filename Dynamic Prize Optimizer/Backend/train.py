@@ -6,11 +6,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 def data_preprocessing_pipeline(df):
-    """
-    Cleans data and engineers features for the pricing model.
-    """
-    # Identify numeric and categorical columns
-    numeric_features 
+
+    # Define numeric columns
+    numeric_features = [
+        'Number_of_Riders',
+        'Number_of_Drivers',
+        'Expected_Ride_Duration'
+    ]
     
     # Handle missing values
     for col in numeric_features:
@@ -29,13 +31,15 @@ def data_preprocessing_pipeline(df):
         df[col] = np.where(df[col] > upper_bound, df[col].mean(), df[col])
     
     # Encoding categorical features
-    df = df.map({'Economy': 0, 'Premium': 1})
+    df['Vehicle_Type'] = df['Vehicle_Type'].map({'Economy': 0, 'Premium': 1})
     
     # Target definition (derived dynamic price)
     # Using percentile-based logic to simulate historical dynamic pricing
     demand_p = df.quantile(0.75)
     supply_p = df.quantile(0.25)
-    df['adjusted_ride_cost'] = (df / demand_p) * (supply_p / df) * 100
+    df['adjusted_ride_cost'] = (
+    df['Number_of_Riders'] / df['Number_of_Drivers']
+) * df['Expected_Ride_Duration'] * 10
     
     return df
 
