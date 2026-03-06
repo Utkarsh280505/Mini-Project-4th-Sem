@@ -18,7 +18,7 @@ def data_preprocessing_pipeline(df):
     for col in numeric_features:
         df[col] = df[col].fillna(df[col].mean())
     
-    df = df.fillna(df.mode())
+    df = df.fillna(df.mode().iloc[0])
     
     # Outlier handling using IQR
     for col in numeric_features:
@@ -59,7 +59,7 @@ def train():
     processed_df = data_preprocessing_pipeline(df)
     
     # Feature selection
-    X = processed_df
+    X = processed_df.drop('adjusted_ride_cost', axis=1)
     y = processed_df['adjusted_ride_cost']
     
     # Split data
