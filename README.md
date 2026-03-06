@@ -305,9 +305,9 @@ Future Feedback Loop
 
 # 👨‍💻 Author
 
-Utkarsh Gupta
-Jayant Kumar
-Kapish Sharma
+* Utkarsh Gupta
+* Jayant Kumar
+* Kapish Sharma
 
 ---
 
