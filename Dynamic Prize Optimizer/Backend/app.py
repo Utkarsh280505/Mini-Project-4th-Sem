@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -199,10 +199,10 @@ users = {
 @st.cache_resource
 def load_model():
     try:
-        model = pickle.load(open("pricing_model.pkl", "rb"))
-        return model
+        data = pickle.load(open("pricing_model.pkl", "rb"))
+        return data["model"], data["features"]
     except:
-        return None
+        return None, None
 
 # -----------------------------
 # Login Page
@@ -278,18 +278,25 @@ def dashboard():
     </p>
     """, unsafe_allow_html=True)
 
-    model = load_model()
+    model, feature_cols = load_model()
     if model is None:
         st.error("⚠️ Model file not found. Please run `train.py` first.")
         return
 
     # ── Sidebar inputs ──────────────────────────────────
     st.sidebar.markdown("### ⚙️ Market Parameters")
-    num_riders  = st.sidebar.slider("👥 Riders (Demand)",  1, 100, 20, help="Total ride requests in the market")
-    num_drivers = st.sidebar.slider("🚗 Drivers (Supply)", 1,  50, 10, help="Available drivers in the market")
-    duration    = st.sidebar.number_input("⏱️ Ride Duration (min)", 5, 120, 25, step=5)
+
+    num_riders  = st.sidebar.slider("👥 Riders (Demand)", 1, 100, 20)
+    num_drivers = st.sidebar.slider("🚗 Drivers (Supply)", 1, 50, 10)
+    duration    = st.sidebar.number_input("⏱️ Ride Duration (min)", 5, 120, 25)
+
     vehicle     = st.sidebar.selectbox("🏎️ Vehicle Type", ["Economy", "Premium"])
     vehicle_type = 0 if vehicle == "Economy" else 1
+
+    hour = st.sidebar.slider("🕒 Hour of Day", 0, 23, 12)
+    traffic = st.sidebar.slider("🚦 Traffic Level", 1, 5, 2)
+
+    is_peak = 1 if (8 <= hour <= 10 or 17 <= hour <= 20) else 0
 
     st.sidebar.divider()
     calc_btn = st.sidebar.button("⚡ Calculate Optimized Price", use_container_width=True)
@@ -310,8 +317,25 @@ def dashboard():
         demand_color = "#22c55e"
 
     # ── Prediction ─────────────────────────────────────
-    features = np.array([[num_riders, num_drivers, duration, vehicle_type]])
-    live_price = round(model.predict(features)[0], 2)
+    features = pd.DataFrame([{
+        "Number_of_Riders": num_riders,
+        "Number_of_Drivers": num_drivers,
+        "Expected_Ride_Duration": duration,
+        "Vehicle_Type": vehicle_type,
+        "Is_Peak": is_peak,
+        "Traffic_Level": traffic
+    }])[feature_cols]
+
+    base_price = duration * 8
+    predicted_price = model.predict(features)[0]
+
+    # Business logic layer
+    if ratio > 2:
+        predicted_price *= 1.2
+    elif ratio < 0.8:
+        predicted_price *= 0.9
+
+    live_price = round(predicted_price, 2)
 
     if calc_btn:
         st.session_state.prediction_made = True
@@ -332,12 +356,10 @@ def dashboard():
 
         # Metrics row
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("💰 Predicted Fare", f"₹{res['price']}")
-        c2.metric("📈 Demand/Supply Ratio", f"{res['ratio']}x")
-        c3.metric("⏱️ Ride Duration", f"{res['duration']} min")
-        c4.metric("🛣️ Market Status", "High Surge" if res['ratio'] > 1.5 else "Stable")
-
-        st.markdown("<br>", unsafe_allow_html=True)
+        c1.metric("💰 Optimized Fare", f"₹{live_price}")
+        c2.metric("📊 Base Price", f"₹{base_price}")
+        c3.metric("📈 Demand/Supply", f"{ratio}x")
+        c4.metric("🚦 Traffic Level", traffic)
 
         # ── Charts row ─────────────────────────────────
         col_chart1, col_chart2 = st.columns(2)
@@ -345,7 +367,7 @@ def dashboard():
         with col_chart1:
             st.markdown("#### 📉 Fare vs. Rider Demand")
             range_riders = list(range(1, 101, 5))
-            prices_line = [round(model.predict(np.array([[r, res['num_drivers'], res['duration'], res['vehicle_type']]]))[0], 2) for r in range_riders]
+            prices_line = [round(model.predict(pd.DataFrame([{"Number_of_Riders": r, "Number_of_Drivers": res['num_drivers'], "Expected_Ride_Duration": res['duration'], "Vehicle_Type": res['vehicle_type'], "Is_Peak": is_peak, "Traffic_Level": traffic}])[feature_cols])[0], 2) for r in range_riders]
             df_line = pd.DataFrame({"Riders": range_riders, "Predicted Fare (₹)": prices_line})
             fig_line = px.line(
                 df_line, x="Riders", y="Predicted Fare (₹)",
@@ -367,7 +389,7 @@ def dashboard():
         with col_chart2:
             st.markdown("#### 🚗 Fare vs. Driver Supply")
             range_drivers = list(range(1, 51, 3))
-            prices_supply = [round(model.predict(np.array([[res['num_riders'], d, res['duration'], res['vehicle_type']]]))[0], 2) for d in range_drivers]
+            prices_supply = [round(model.predict(pd.DataFrame([{"Number_of_Riders": res['num_riders'], "Number_of_Drivers": d, "Expected_Ride_Duration": res['duration'], "Vehicle_Type": res['vehicle_type'], "Is_Peak": is_peak, "Traffic_Level": traffic}])[feature_cols])[0], 2) for d in range_drivers]
             df_supply = pd.DataFrame({"Drivers": range_drivers, "Predicted Fare (₹)": prices_supply})
             fig_supply = px.area(
                 df_supply, x="Drivers", y="Predicted Fare (₹)",
@@ -393,7 +415,7 @@ def dashboard():
         for r in rider_vals:
             row = []
             for d in duration_vals:
-                p = round(model.predict(np.array([[r, res['num_drivers'], d, res['vehicle_type']]]))[0], 2)
+                p = round(model.predict(pd.DataFrame([{"Number_of_Riders": r, "Number_of_Drivers": res['num_drivers'], "Expected_Ride_Duration": d, "Vehicle_Type": res['vehicle_type'], "Is_Peak": is_peak, "Traffic_Level": traffic}])[feature_cols])[0], 2)
                 row.append(p)
             heat_data.append(row)
 
