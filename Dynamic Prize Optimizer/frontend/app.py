@@ -5,9 +5,9 @@ import pandas as pd
 import pickle
 import numpy as np
 
-# -----------------------------
+# ----------------------------
 # Page Configuration
-# -----------------------------
+# ----------------------------
 st.set_page_config(
     page_title="Dynamic Price Optimizer",
     page_icon="⚡",
