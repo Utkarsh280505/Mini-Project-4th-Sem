@@ -5,9 +5,9 @@ import pandas as pd
 import pickle
 import numpy as np
 
-# ----------------------------
+# -----------------------------
 # Page Configuration
-# ----------------------------
+# -----------------------------
 st.set_page_config(
     page_title="Dynamic Price Optimizer",
     page_icon="⚡",
@@ -178,11 +178,16 @@ h3 { color: #94a3b8 !important; font-weight: 600 !important; }
 # -----------------------------
 # Session State
 # -----------------------------
-if "logged_in" not in st.session_state:
+try:
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
+    if "prediction_made" not in st.session_state:
+        st.session_state.prediction_made = False
+    if "last_result" not in st.session_state:
+        st.session_state.last_result = {}
+except (AttributeError, KeyError):
     st.session_state.logged_in = False
-if "prediction_made" not in st.session_state:
     st.session_state.prediction_made = False
-if "last_result" not in st.session_state:
     st.session_state.last_result = {}
 
 # -----------------------------
@@ -599,21 +604,26 @@ def contact():
     with col1:
         st.markdown("""
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
-             border-radius:18px; padding:32px;">
+             border-radius:18px; padding:32px; margin-bottom:20px;">
             <div style="font-size:56px; text-align:center; margin-bottom:16px;">👨‍💻</div>
             <h3 style="text-align:center; color:#a78bfa; margin:0 0 6px;">Utkarsh Gupta</h3>
+            <p style="text-align:center; color:#64748b; margin-bottom:24px;">B.Tech — AI &amp; Coding</p>
+            <h3 style="text-align:center; color:#a78bfa; margin:0 0 6px;">Jayant Kumar</h3>
+            <p style="text-align:center; color:#64748b; margin-bottom:24px;">B.Tech — AI &amp; Coding</p>
+            <h3 style="text-align:center; color:#a78bfa; margin:0 0 6px;">Kapish Sharma</h3>
             <p style="text-align:center; color:#64748b; margin-bottom:24px;">B.Tech — AI &amp; Coding</p>
             <div style="display:flex; flex-direction:column; gap:14px;">
                 <div style="display:flex; align-items:center; gap:12px; color:#94a3b8;">
                     <span style="font-size:1.3rem">📧</span>
-                    <a href="mailto:utkarsh@example.com" style="color:#a78bfa; text-decoration:none;">utkarsh@example.com</a>
+                    <a href="ug38302@gmail.com" style="color:#a78bfa; text-decoration:none;">utkarsh@example.com</a>
                 </div>
                 <div style="display:flex; align-items:center; gap:12px; color:#94a3b8;">
                     <span style="font-size:1.3rem">🌐</span>
-                    <a href="https://github.com/yourgithub" style="color:#a78bfa; text-decoration:none;" target="_blank">github.com/yourgithub</a>
+                    <a href="https://github.com/Utkarsh280505" style="color:#a78bfa; text-decoration:none;" target="_blank">github.com/yourgithub</a>
                 </div>
             </div>
         </div>
+        
         """, unsafe_allow_html=True)
 
     with col2:
@@ -636,7 +646,13 @@ def contact():
 # -----------------------------
 # Main App Logic
 # -----------------------------
-if not st.session_state.logged_in:
+try:
+    logged_in = st.session_state.logged_in
+except (AttributeError, KeyError):
+    st.session_state.logged_in = False
+    logged_in = False
+
+if not logged_in:
     login()
 else:
     page = navbar()
