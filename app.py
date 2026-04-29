@@ -1,26 +1,57 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
 import pickle
 import pandas as pd
 import os
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.secret_key = 'super-secret-key-for-dynamic-pricing'
 CORS(app)
+
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 # Load model
 def load_model():
     try:
-        with open('pricing_model.pkl', 'rb') as f:
-            data = pickle.load(f)
-            return data['model'], data['features']
-    except:
+        model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pricing_model.pkl')
+        with open(model_path, 'rb') as f:
+            model = pickle.load(f)
+            feature_cols = ['Number_of_Riders', 'Number_of_Drivers', 'Expected_Ride_Duration', 'Vehicle_Type']
+            return model, feature_cols
+    except Exception as e:
+        print(f"Error loading model: {e}")
         return None, None
 
 model, feature_cols = load_model()
 
 @app.route('/')
 def index():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('index.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == 'admin' and password == 'password':
+            session['logged_in'] = True
+            return redirect(url_for('index'))
+        else:
+            error = 'Invalid Credentials. Please try again.'
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
