@@ -3,89 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Price Optimizer</title>
+    <title>Dynamic Pricing Optimizer</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-content">
-            <div class="logo">⚡ Dynamic Price Optimizer</div>
-            <div class="tagline">AI-Powered Ride Fare Intelligence</div>
-        </div>
-    </nav>
-
     <div class="container">
-        <div class="dashboard">
-            <div class="control-panel">
-                <h2>⚙️ Market Parameters</h2>
-                
-                <div class="control-group">
-                    <label for="riders">👥 Riders: <span id="ridersValue">20</span></label>
-                    <input type="range" id="riders" min="1" max="100" value="20" class="slider">
-                </div>
+        <header>
+            <h1>🚀 Dynamic Pricing Optimization Engine</h1>
+            <p>Real-time ride pricing predictions powered by Machine Learning</p>
+        </header>
 
-                <div class="control-group">
-                    <label for="drivers">🚗 Drivers: <span id="driversValue">10</span></label>
-                    <input type="range" id="drivers" min="1" max="50" value="10" class="slider">
-                </div>
+        <div class="main-content">
+            <div class="input-panel">
+                <h2>Enter Ride Parameters</h2>
+                <form id="pricingForm">
+                    <div class="form-group">
+                        <label for="riders">Number of Riders:</label>
+                        <input type="range" id="riders" name="riders" min="1" max="50" value="5">
+                        <span id="ridersValue">5</span>
+                    </div>
 
-                <div class="control-group">
-                    <label for="duration">⏱️ Duration: <span id="durationValue">25</span>min</label>
-                    <input type="range" id="duration" min="5" max="120" value="25" class="slider">
-                </div>
+                    <div class="form-group">
+                        <label for="drivers">Available Drivers:</label>
+                        <input type="range" id="drivers" name="drivers" min="1" max="50" value="10">
+                        <span id="driversValue">10</span>
+                    </div>
 
-                <div class="control-group">
-                    <label for="vehicle">🏎️ Vehicle:</label>
-                    <select id="vehicle" class="select">
-                        <option value="0">Economy</option>
-                        <option value="1">Premium</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="duration">Ride Duration (mins):</label>
+                        <input type="range" id="duration" name="duration" min="5" max="120" value="20">
+                        <span id="durationValue">20</span>
+                    </div>
 
-                <div class="control-group">
-                    <label for="hour">🕒 Hour: <span id="hourValue">12</span></label>
-                    <input type="range" id="hour" min="0" max="23" value="12" class="slider">
-                </div>
+                    <div class="form-group">
+                        <label for="vehicle">Vehicle Type:</label>
+                        <select id="vehicle" name="vehicle">
+                            <option value="0">Economy</option>
+                            <option value="1">Premium</option>
+                        </select>
+                    </div>
 
-                <div class="control-group">
-                    <label for="traffic">🚦 Traffic: <span id="trafficValue">2</span></label>
-                    <input type="range" id="traffic" min="1" max="5" value="2" class="slider">
-                </div>
+                    <div class="form-group">
+                        <label for="is_peak">Peak Hours:</label>
+                        <select id="is_peak" name="is_peak">
+                            <option value="0">Off-Peak</option>
+                            <option value="1">Peak Hours</option>
+                        </select>
+                    </div>
 
-                <button class="btn-calculate" onclick="calculatePrice()">⚡ Calculate Price</button>
+                    <div class="form-group">
+                        <label for="traffic">Traffic Level (0-5):</label>
+                        <input type="range" id="traffic" name="traffic" min="0" max="5" value="2">
+                        <span id="trafficValue">2</span>
+                    </div>
+
+                    <button type="button" class="btn-predict" onclick="predictPrice()">
+                        Calculate Price
+                    </button>
+                </form>
             </div>
 
-            <div class="results-panel" id="resultsPanel" style="display:none;">
-                <div class="metrics">
-                    <div class="metric-card">
-                        <div class="metric-label">💰 Optimized Fare</div>
-                        <div class="metric-value" id="priceValue">₹0</div>
+            <div class="results-panel">
+                <h2>Pricing Results</h2>
+                <div class="result-card">
+                    <div class="result-item">
+                        <label>Base Price:</label>
+                        <span id="basePrice" class="price">₹0.00</span>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-label">📊 Base Price</div>
-                        <div class="metric-value" id="baseValue">₹0</div>
+                    <div class="result-item">
+                        <label>ML Predicted Price:</label>
+                        <span id="finalPrice" class="price highlight">₹0.00</span>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-label">📈 Ratio</div>
-                        <div class="metric-value" id="ratioValue">0x</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">���� Traffic</div>
-                        <div class="metric-value" id="trafficMetric">2</div>
+                    <div class="result-item">
+                        <label>Demand/Supply Ratio:</label>
+                        <span id="ratio">0.00</span>
                     </div>
                 </div>
-
-                <div class="insights">
-                    <h3>💡 Smart Insights</h3>
-                    <div class="insight-cards">
-                        <div class="insight-card" id="demandInsight"></div>
-                        <div class="insight-card" id="vehicleInsight"></div>
-                        <div class="insight-card" id="surgeInsight"></div>
-                    </div>
-                </div>
+                <div id="errorMessage" class="error"></div>
             </div>
         </div>
+
+        <footer>
+            <p>Dynamic Pricing Optimization System | 4th Semester Mini Project</p>
+        </footer>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
