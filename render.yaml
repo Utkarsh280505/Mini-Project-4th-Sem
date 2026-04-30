@@ -1,31 +1,30 @@
 services:
-  # Backend API Service
   - type: web
     name: dynamic-pricing-backend
-    runtime: python
-    pythonVersion: 3.11
-    rootDir: backend
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
     env: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: DATABASE_URL
-        scope: build,runtime
-      - key: SECRET_KEY
-        scope: build,runtime
-      - key: REFRESH_SECRET_KEY
-        scope: build,runtime
       - key: ENVIRONMENT
         value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REFRESH_SECRET_KEY
+        generateValue: true
       - key: FRONTEND_URL
-        value: https://mini-project-4th-sem-frontend.onrender.com
+        sync: false
 
-  # Frontend Static Site Service
   - type: static_site
     name: dynamic-pricing-frontend
     rootDir: frontend
-    buildCommand: "npm install && npm run build"
+    buildCommand: npm install && npm run build
     publishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://dynamic-pricing-backend.onrender.com/api/v1
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

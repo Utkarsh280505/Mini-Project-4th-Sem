@@ -1,7 +1,11 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { Token, LoginRequest, RegisterRequest, User } from '@/types';
 
-const DEFAULT_API = import.meta.env.VITE_API_URL || 'http://localhost:8001/api/v1';
+const configuredApi = import.meta.env.VITE_API_URL as string | undefined;
+const normalizedConfiguredApi = configuredApi
+  ? (configuredApi.endsWith('/api/v1') ? configuredApi : `${configuredApi.replace(/\/$/, '')}/api/v1`)
+  : undefined;
+const DEFAULT_API = normalizedConfiguredApi || 'http://localhost:8001/api/v1';
 const API_BASE_URL = (typeof window !== 'undefined' && localStorage.getItem('api_base_url')) || DEFAULT_API;
 
 class ApiService {
