@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from uvloop import install as install_uvloop # This is already in your logs
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+from fastapi.middleware.proxy_headers import ProxyHeadersMiddleware
 import time
 
 from app.core.config import settings
