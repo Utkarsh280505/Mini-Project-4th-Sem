@@ -29,6 +29,7 @@ app = FastAPI(
 # Add CORS middleware
 cors_origins = [
     settings.FRONTEND_URL,
+    "https://mini-project-4th-ey5xkjc53-utkarsh280505s-projects.vercel.app", # Your specific Vercel URL
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:5174",
@@ -109,12 +110,15 @@ async def startup_event():
         except Exception as e:
             logger.warning(f"Seeding skipped or failed: {e}")
 
+import os
 
 if __name__ == "__main__":
     import uvicorn
+    # Render provides the PORT environment variable automatically
+    port = int(os.environ.get("PORT", 8001)) 
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
-        port=8001,
+        port=port,
         reload=settings.DEBUG
     )
