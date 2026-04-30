@@ -43,8 +43,8 @@ export function Register() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center">
-              <TrendingUp className="h-7 w-7 text-white" />
+            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
+              <TrendingUp className="h-7 w-7 text-primary-foreground" />
             </div>
           </div>
           <CardTitle className="text-2xl text-center">Create an account</CardTitle>
@@ -94,7 +94,7 @@ export function Register() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={loading}
             >
               {loading ? (

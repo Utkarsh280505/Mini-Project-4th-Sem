@@ -3,49 +3,68 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Light theme — lime / fresh green ─────────────────────────────────── */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --background:          120 40% 96%;   /* very light lime-green page bg   */
+    --foreground:          140 40% 8%;    /* deep green-black text            */
+
+    --card:                120 30% 98%;   /* near-white cards with green tint */
+    --card-foreground:     140 40% 8%;
+
+    --popover:             120 30% 98%;
+    --popover-foreground:  140 40% 8%;
+
+    --primary:             130 60% 38%;   /* medium green — buttons, links    */
+    --primary-foreground:  0 0% 100%;
+
+    --secondary:           120 30% 90%;   /* soft lime for secondary elements */
+    --secondary-foreground:140 40% 15%;
+
+    --muted:               120 25% 91%;   /* muted lime-grey                  */
+    --muted-foreground:    140 20% 42%;
+
+    --accent:              120 35% 88%;   /* hover / accent surfaces          */
+    --accent-foreground:   140 40% 12%;
+
+    --destructive:         0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:              120 25% 84%;   /* green-tinted borders             */
+    --input:               120 25% 84%;
+    --ring:                130 60% 38%;
+
     --radius: 0.5rem;
   }
 
+  /* ── Dark theme — deep forest green ───────────────────────────────────── */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background:          150 30% 7%;    /* very dark forest green           */
+    --foreground:          120 20% 92%;   /* light green-white text           */
+
+    --card:                150 28% 10%;   /* dark green cards                 */
+    --card-foreground:     120 20% 92%;
+
+    --popover:             150 28% 10%;
+    --popover-foreground:  120 20% 92%;
+
+    --primary:             130 55% 52%;   /* bright green primary             */
+    --primary-foreground:  150 30% 7%;
+
+    --secondary:           150 25% 16%;
+    --secondary-foreground:120 20% 88%;
+
+    --muted:               150 25% 16%;
+    --muted-foreground:    130 15% 58%;
+
+    --accent:              150 25% 18%;
+    --accent-foreground:   120 20% 92%;
+
+    --destructive:         0 62.8% 30.6%;
+    --destructive-foreground: 120 20% 92%;
+
+    --border:              150 22% 18%;
+    --input:               150 22% 18%;
+    --ring:                130 55% 45%;
   }
 }
 
@@ -56,4 +75,70 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ── Smooth scroll ─────────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Scroll-to-top button ──────────────────────────────────────────────────── */
+#scroll-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+  pointer-events: none;
+}
+
+#scroll-to-top.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+#scroll-to-top:hover {
+  background: hsl(var(--primary) / 0.85);
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+}
+
+#scroll-to-top svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Scrollbar styling (webkit) ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
 }

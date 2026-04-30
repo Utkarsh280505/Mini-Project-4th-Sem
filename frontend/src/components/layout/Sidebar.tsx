@@ -26,8 +26,8 @@ export function Sidebar() {
         {/* Logo */}
         <div className="flex h-16 shrink-0 items-center">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <TrendingUp className="h-5 w-5 text-white" />
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-lg font-semibold text-foreground">PriceAI</span>
           </div>
@@ -45,7 +45,7 @@ export function Sidebar() {
                     cn(
                       'group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 transition-colors',
                       isActive
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-primary text-primary-foreground'
                         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                     )
                   }
