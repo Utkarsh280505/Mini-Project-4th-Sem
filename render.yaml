@@ -7,6 +7,7 @@ services:
     rootDir: backend
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    env: python
     envVars:
       - key: DATABASE_URL
         scope: build,runtime
@@ -17,22 +18,14 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: https://mini-project-4th-sem-1-4cvr.onrender.com
+        value: https://mini-project-4th-sem-frontend.onrender.com
 
   # Frontend Static Site Service
   - type: static_site
     name: dynamic-pricing-frontend
     rootDir: frontend
     buildCommand: "npm install && npm run build"
-    staticPublishPath: dist
+    publishPath: dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: dynamic-pricing-backend
-          type: web
-          property: url
-    routes:
-      - path: /api
-        service:
-          name: dynamic-pricing-backend
-          type: web
+        value: https://dynamic-pricing-backend.onrender.com/api/v1
