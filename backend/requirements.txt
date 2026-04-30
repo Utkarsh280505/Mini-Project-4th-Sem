@@ -27,5 +27,7 @@ pydantic-settings==2.1.0
 pytest==7.4.3
 httpx==0.25.2
 
-# Logging
+fastapi>=0.100.0
+uvicorn>=0.22.0
+
 structlog==23.2.0
