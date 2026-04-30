@@ -99,16 +99,15 @@ def health_check():
     }
 
 
-# Run seeding on startup (in development)
+# Run idempotent seeding on startup (all environments)
 @app.on_event("startup")
 async def startup_event():
     """Run on application startup"""
     logger.info(f"Starting {settings.APP_NAME}")
-    if settings.ENVIRONMENT == "development":
-        try:
-            seed_all()
-        except Exception as e:
-            logger.warning(f"Seeding skipped or failed: {e}")
+    try:
+        seed_all()
+    except Exception as e:
+        logger.warning(f"Seeding skipped or failed: {e}")
 
 import os
 
