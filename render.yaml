@@ -17,19 +17,13 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        fromService:
-          name: dynamic-pricing-frontend
-          type: web
-          property: url
+        value: https://mini-project-4th-sem-1-4cvr.onrender.com
 
-  # Frontend Service
-  - type: web
+  # Frontend Static Site Service
+  - type: static_site
     name: dynamic-pricing-frontend
-    runtime: node
-    nodeVersion: 20
     rootDir: frontend
     buildCommand: "npm install && npm run build"
-    startCommand: "npm run preview"
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
@@ -37,3 +31,8 @@ services:
           name: dynamic-pricing-backend
           type: web
           property: url
+    routes:
+      - path: /api
+        service:
+          name: dynamic-pricing-backend
+          type: web
