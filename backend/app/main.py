@@ -27,19 +27,27 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+cors_origins = [
+    settings.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:5175",
+]
+
+# In production, allow all HTTPS origins (Render uses HTTPS)
+if settings.ENVIRONMENT == "production":
+    allow_origin_regex = r"https://.+"
+else:
+    allow_origin_regex = r"https?://(localhost|127\.0\.0\.1):\d+$"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        settings.FRONTEND_URL,
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:5175",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-        "http://127.0.0.1:5175",
-    ],
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1):\d+$",
+    allow_origins=cors_origins,
+    allow_origin_regex=allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
