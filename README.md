@@ -1,5 +1,7 @@
 # 🚀 Dynamic Pricing Optimization System
 
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/729d73a7-07cd-4265-ba85-3133dc411330" />
+
 <p align="center">
   <b>AI-powered real-time pricing engine using demand forecasting & elasticity modeling</b><br>
   Built with FastAPI ⚡ + React ⚛️
@@ -225,7 +227,7 @@ MIT License
   * ML Engineering 🤖
 
 ---
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/729d73a7-07cd-4265-ba85-3133dc411330" />
+
 
 
 
